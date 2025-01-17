@@ -1,0 +1,23 @@
+---
+export interface Props {
+	title: string;
+	desc?: string;
+	icon?: string;
+}
+const { title, desc, icon } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>{title}</title>
+		<meta name="author" lang="en" content="coresyt">
+		{desc && <meta name="description" content={desc} />}
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		{icon ? <link rel="icon" type="image/svg+xml" href={icon} /> : <link rel="icon" type="image/svg+xml" href="/favicon.svg" />}
+	</head>
+	<body>
+		<slot />
+	</body>
+	</html>
