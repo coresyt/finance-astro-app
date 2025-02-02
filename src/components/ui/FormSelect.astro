@@ -1,0 +1,30 @@
+---
+type StringThreeParts = `${string}-${string}-${string}`;
+
+export interface Props extends astroHTML.JSX.SelectHTMLAttributes {
+	name: string;
+	id: StringThreeParts;
+	data: { value: StringThreeParts; label: string }[];
+	selectClass?: astroHTML.JSX.SelectHTMLAttributes["class"];
+	optionClass?: astroHTML.JSX.OptionHTMLAttributes["class"];
+}
+
+const {
+	name,
+	id,
+	selectClass,
+	optionClass,
+	class: classn,
+	...props
+} = Astro.props;
+---
+
+<select name={name} id={id} class:list={[selectClass]} {...props}>
+	{
+		props.data.map(({ value, label }) => (
+			<option class:list={[optionClass]} value={value}>
+				{label}
+			</option>
+		))
+	}
+</select>

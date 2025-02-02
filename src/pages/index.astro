@@ -1,6 +1,103 @@
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "@layouts/Layout.astro";
+import Icon from "@components/ui/Icon.astro";
+import Form from "@components/Form.astro";
 ---
 
-<Layout title="Hello world">
+<Layout title="Hello world" class="bg-white">
+	<header
+		class="sticky top-0 mb-5 flex items-center justify-center bg-black text-white h-28"
+	>
+		<Icon sizeX={80} sizeY={80} />
+		<h1 class="font-Geist font-bold text-4xl uppercase mr-2">Finance App</h1>
+		<button
+			data-hash="#create"
+			id="change-visibility-form"
+			class="font-semibold uppercase">Create</button
+		>
+	</header>
+
+	<section class="bg-black text-white p-4" id="expense-new-form" hidden>
+		<h2 class="font-Geist font-bold text-4xl">Add a new expense</h2>
+		<Form />
+	</section>
+
+	<main
+		id="expenses-container"
+		class="grid sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 px-4 my-5"
+	>
+	</main>
+
+	<template id="template-expense-item">
+		<section class="bg-black text-white p-4 gap-4 grid grid-rows-3">
+			<div class="flex justify-between items-center row-span-1">
+				<h2
+					id="expense-item-title"
+					class="text-2xl font-bold capitalize tracking-wide"
+				>
+				</h2>
+				<h3 id="expense-item-amount"></h3>
+			</div>
+			<div class="flex justify-between items-center row-span-1">
+				<p id="expense-item-type"></p>
+				<p id="expense-item-date"></p>
+			</div>
+			<button
+				class="m-auto row-span-1 h-10 w-full rounded-lg bg-red text-redLight/75 text-xl font-bold font-Geist transition-colors duration-150 ease-in-out hover:bg-red/70 hover:text-redLight hover:cursor-pointer"
+				id="expense-item-delete">Delete</button
+			>
+		</section>
+	</template>
 </Layout>
+
+<script>
+	import { $, $$ } from "@lib/element";
+	import handlerShowExpenses from "@lib-handlers/showExpenses";
+	import handlerDeleteExpense from "@lib-handlers/deleteExpense";
+
+	const $buttonChange = $("#change-visibility-form");
+	if ($buttonChange instanceof HTMLButtonElement)
+		$buttonChange.addEventListener("click", ({ target }) => {
+			if (target instanceof HTMLButtonElement) {
+				const isCreated = location.hash === "#create";
+				const dataHash = target.getAttribute("data-hash");
+				if (typeof dataHash !== "string") return;
+				location.hash = isCreated ? "" : dataHash;
+			}
+		});
+
+	window.addEventListener("hashchange", () => {
+		const isCreated = location.hash === "#create";
+
+		if (isCreated) {
+			console.log("isCreated", isCreated);
+			const form = $("#expense-new-form");
+			if (form) form.removeAttribute("hidden");
+		} else {
+			const form = $("#expense-new-form");
+			if (form) form.setAttribute("hidden", "");
+		}
+	});
+
+	document.addEventListener("DOMContentLoaded", (_) => {
+		const isCreated = location.hash === "#create";
+
+		if (isCreated) {
+			console.log("isCreated", isCreated);
+			const form = $("#expense-new-form");
+			if (form) form.removeAttribute("hidden");
+		}
+
+		handlerShowExpenses();
+	});
+
+	window.addEventListener("load", () => {
+		const allButtonsDeletes = $$("button#expense-item-delete");
+
+		allButtonsDeletes.forEach((el) => {
+			if (el instanceof HTMLButtonElement) {
+				el.addEventListener("click", (event) => handlerDeleteExpense(event));
+			}
+		});
+	});
+</script>

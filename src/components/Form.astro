@@ -1,0 +1,123 @@
+---
+import FormSelect from "@components/ui/FormSelect.astro";
+import expensesType from "@lib/expenses";
+
+const slideOut = {
+	old: {
+		name: "slideOut",
+		duration: "0.05s",
+		easing: "ease-in",
+	},
+	new: {
+		name: "slideIn",
+		duration: "0.05s",
+		easing: "ease-in-out",
+	},
+};
+
+const slideOutTransition = {
+	forwards: slideOut,
+	backwards: slideOut,
+};
+---
+
+<form
+	id="expense-form"
+	class="grid grid-cols-6 grid-rows-3 px-4 gap-4 [&>label]:font-bold [&>label]:text-xl overflow-hidden box-border"
+>
+	<label
+		for="expense-name"
+		id="label-expense-name"
+		class="flex flex-col gap-1 col-start-1 col-end-4"
+		>What is the name of the expense?
+		<input
+			type="text"
+			class="w-full px-2 py-1 rounded-lg text-black/75"
+			name="expenseName"
+			id="expense-name"
+		/>
+	</label>
+
+	<label
+		for="expense-amount"
+		id="label-expense-amount"
+		class="flex flex-col gap-1 col-start-4 col-end-7"
+		>What is the amount expensed?
+
+		<input
+			type="number"
+			class="w-full px-2 py-1 rounded-lg text-black/75"
+			name="expenseAmount"
+			id="expense-amount"
+		/>
+	</label>
+
+	<label
+		transition:name="expense-transition-type"
+		for="expense-type-personal"
+		hidden
+		id="label-expense-personal"
+		class="col-span-6"
+		>What is the type of the expense personal?
+		<FormSelect
+			optionClass="text-black/75"
+			selectClass="text-black/75 w-full px-4 py-2 rounded-lg appearance-none"
+			name="expenseTypePersonal"
+			id="expense-type-personal"
+			data={Object.values(expensesType.personal)}
+		/>
+	</label>
+
+	<label
+		transition:name="expense-transition-type"
+		for="expenseTypeEnterprise"
+		id="label-expense-enterprise"
+		class="col-span-6"
+		>What is the type of the expense enterprise?
+		<FormSelect
+			optionClass="text-black/75"
+			selectClass="text-black/75 w-full px-4 py-2 rounded-lg appearance-none"
+			name="expense-type-enterprise"
+			id="expense-type-enterprise"
+			data={Object.values(expensesType.enterprise)}
+		/>
+	</label>
+
+	<div
+		id="expense-change-type"
+		class="col-start-1 sm:col-end-2 col-end-3 grid-rows-2 flex flex-col items-center justify-center text-center [&>div]:text-lg [&>div]:font-extrabold"
+	>
+		<div id="label-expense-type-enterprise">Enterprise</div>
+		<div id="label-expense-type-personal" hidden>Personal</div>
+		<button
+			class="bg-white/40 rounded-full w-16 h-10 relative hover:bg-white/20 [&>div]:hover:bg-white/50 transition-colors duration-300 ease-in-out"
+			><div
+				class="rounded-full size-8 bg-white absolute top-[9%] init"
+				transition:animate={slideOutTransition}
+			>
+			</div></button
+		>
+	</div>
+
+	<button
+		class="m-auto sm:col-span-5 col-span-4 h-12 w-full rounded-lg bg-green text-greenLight text-xl font-bold font-Geist transition-colors duration-150 ease-in-out hover:bg-green/70 hover:greenLight-white hover:cursor-pointer"
+		>Add</button
+	>
+</form>
+
+<script>
+	import { $ } from "@lib/element";
+	import switchType from "@lib/switchType";
+	import handler from "@lib-handlers/form";
+
+	const $formElement = $("#expense-form");
+
+	if ($formElement instanceof HTMLFormElement) {
+		$formElement.addEventListener("submit", (event) => {
+			event.preventDefault();
+		});
+		handler($formElement);
+	}
+
+	switchType();
+</script>
